@@ -1,5 +1,7 @@
 package com.example.webservice.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +14,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "userId")
 public class User {
 
     @Id
@@ -31,8 +36,10 @@ public class User {
 
     public void addReservation(Lecture lecture){
         this.reservations.add(lecture);
+        lecture.getUsers().add(this);
     }
     public void removeReservation(Lecture lecture){
         this.reservations.remove(lecture);
+        lecture.getUsers().remove(this);
     }
 }
