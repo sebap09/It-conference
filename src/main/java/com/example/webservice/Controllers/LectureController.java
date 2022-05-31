@@ -35,6 +35,12 @@ public class LectureController {
         return new ResponseEntity<>(lectureService.getLectures(),HttpStatus.OK);
     }
 
+//    // GET http://localhost:8080/api/lectures/organisation
+//    @GetMapping(value = "/lectures/organisation")
+//    public ResponseEntity<List<Lecture>> getLectureInterest(){
+//        return new ResponseEntity<>(lectureService.getLectureInterest(),HttpStatus.OK);
+//    }
+
     //TU DODAC CustomException
     // GET http://localhost:8080/api/lectures?login=
     @GetMapping(value = "/lectures")
@@ -45,6 +51,8 @@ public class LectureController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+
 
 
     //TU DODAC idRezerwacji i CustomException i chyba zmienic na PUT
@@ -70,4 +78,6 @@ public class LectureController {
         }
 
     }
+
+
 }

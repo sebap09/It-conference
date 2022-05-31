@@ -5,6 +5,8 @@ import com.example.webservice.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,11 +23,27 @@ public class UserService {
        return userRepository.save(user);
     }
 
-    public User getUserByLogin(String login){
-       return userRepository.findByLogin(login).orElseThrow(RuntimeException::new);
+    public Optional<User> getUserByLogin(String login){
+       return userRepository.findByLogin(login);
     }
 
     public Optional<User> getUserByLoginAndEmail(String login, String email){
         return userRepository.findByLoginAndEmail(login,email);
+    }
+
+    public Optional<User> getUser(Long userId){
+       return userRepository.findById(userId);
+    }
+
+    public List<Object[]> getUsers(){
+       return userRepository.findAllWithIdAndEmail();
+    }
+
+    @Transactional
+    public User editEmail(Long userId, User editedUser){
+       User user=getUser(userId).orElseThrow(RuntimeException::new);
+       user.setEmail(editedUser.getEmail());
+       return user;
+
     }
 }
