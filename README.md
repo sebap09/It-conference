@@ -1,5 +1,14 @@
 # It-conference
 Serwis dla strony do obsługi konferencji IT. 
+Spring boot.
+Uzyte zaleznosci:
+-Spring Web
+-Lombok
+-H2 Database
+-Spring Data JPA
+-Validation
+
+I dodatkowo Swagger do ułatwienia procesu tworzenia REST API (https://swagger.io/)
 
 Aby uruchomić projekt należy użyć Mavena i wykorzystać następujące komendy:
 -mvn clean install
