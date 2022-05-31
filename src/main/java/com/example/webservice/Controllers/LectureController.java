@@ -5,6 +5,7 @@ import com.example.webservice.Entities.Lecture;
 import com.example.webservice.Entities.InterestViews.LectureInterestView;
 import com.example.webservice.Entities.User;
 import com.example.webservice.Exceptions.LectureExceptions.LectureIsFullException;
+import com.example.webservice.Exceptions.LectureExceptions.LectureNotFoundException;
 import com.example.webservice.Exceptions.LectureExceptions.LectureNotFoundExceptionId;
 import com.example.webservice.Exceptions.UserExceptions.LoginIsTakenException;
 import com.example.webservice.Exceptions.UserExceptions.UserNotFoundExceptionLogin;
@@ -16,19 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class LectureController {
-    //zmienic na liczbe mnoga (user->users)
-    //zmienic zagniezdzanie danych z users/7/posts na 'query stringa' users?user_id=7
-    //zadbac o to zeby / byly zawsze na koncu (spring o to zadba sam ale zwrocic uwage)
-    //kiedy not found to dac 404 itd
-    //zmienic mapowanie odpowiedzi serwera
-
 
     private final LectureService lectureService;
     private final InterestService interestService;
@@ -70,11 +63,9 @@ public class LectureController {
 
 
 
-
-
     // POST http://localhost:8080/api/lectures?lectureId=
     @PostMapping(value = "/lectures")
-    public ResponseEntity<?> addLectureReservation(@RequestParam final Long lectureId, @RequestBody final User user) throws URISyntaxException {
+    public ResponseEntity<?> addLectureReservation(@RequestParam final Long lectureId, @RequestBody final User user)  {
         try {
             Lecture lecture = lectureService.addReservation(lectureId, user);
             return new ResponseEntity<>(lecture,HttpStatus.CREATED);
@@ -91,6 +82,7 @@ public class LectureController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
 
+
     }
 
     // DELETE http://localhost:8080/api/lectures/?login=&lectureId=
@@ -103,6 +95,9 @@ public class LectureController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
         catch (LectureNotFoundExceptionId ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+        catch (LectureNotFoundException ex){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
 
