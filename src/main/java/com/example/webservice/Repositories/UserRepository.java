@@ -1,6 +1,7 @@
 package com.example.webservice.Repositories;
 
 import com.example.webservice.Entities.User;
+import com.example.webservice.Entities.Projections.UserProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -16,5 +17,5 @@ public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByLoginAndEmail(String login, String email);
 
     @Query(value = "SELECT user_id, email FROM users",nativeQuery = true)
-    List<Object[]> findAllWithIdAndEmail();
+    List<UserProjection> findAllWithIdAndEmail();
 }

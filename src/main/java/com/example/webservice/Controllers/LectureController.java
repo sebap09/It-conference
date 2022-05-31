@@ -4,6 +4,11 @@ import com.example.webservice.Entities.InterestViews.CategoryInterestView;
 import com.example.webservice.Entities.Lecture;
 import com.example.webservice.Entities.InterestViews.LectureInterestView;
 import com.example.webservice.Entities.User;
+import com.example.webservice.Exceptions.LectureExceptions.LectureIsFullException;
+import com.example.webservice.Exceptions.LectureExceptions.LectureNotFoundExceptionId;
+import com.example.webservice.Exceptions.UserExceptions.LoginIsTakenException;
+import com.example.webservice.Exceptions.UserExceptions.UserNotFoundExceptionLogin;
+import com.example.webservice.Exceptions.UserExceptions.UserParticipationViolation;
 import com.example.webservice.Services.InterestService;
 import com.example.webservice.Services.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,40 +57,53 @@ public class LectureController {
         return new ResponseEntity<>(interestService.getLectureCategoryInterest(),HttpStatus.OK);
     }
 
-    //TU DODAC CustomException
+
     // GET http://localhost:8080/api/lectures?login=
     @GetMapping(value = "/lectures")
-    public ResponseEntity<List<Lecture>> getLectureReservation(@RequestParam final String login){
+    public ResponseEntity<?> getLectureReservation(@RequestParam final String login){
         try {
             return new ResponseEntity<>(lectureService.getLecturesByLogin(login), HttpStatus.OK);
-        }catch (RuntimeException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }catch (UserNotFoundExceptionLogin ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
 
 
 
 
-    //TU DODAC idRezerwacji i CustomException i chyba zmienic na PUT
+
     // POST http://localhost:8080/api/lectures?lectureId=
     @PostMapping(value = "/lectures")
-    public ResponseEntity<Lecture> addLectureReservation(@RequestParam final Long lectureId, @RequestBody final User user) throws URISyntaxException {
+    public ResponseEntity<?> addLectureReservation(@RequestParam final Long lectureId, @RequestBody final User user) throws URISyntaxException {
         try {
             Lecture lecture = lectureService.addReservation(lectureId, user);
-            return ResponseEntity.created(new URI("/lectures/" + "idRezerwacji")).body(lecture);
-        }catch (RuntimeException ex){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return new ResponseEntity<>(lecture,HttpStatus.CREATED);
+        }catch (LectureIsFullException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
+        catch (UserParticipationViolation ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        catch (LoginIsTakenException ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+        catch (LectureNotFoundExceptionId ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+
     }
 
     // DELETE http://localhost:8080/api/lectures/?login=&lectureId=
     @DeleteMapping(value = "/lectures")
-    public ResponseEntity<Void> deleteLectureReservation(@RequestParam final String login,@RequestParam final Long lectureId){
+    public ResponseEntity<?> deleteLectureReservation(@RequestParam final String login,@RequestParam final Long lectureId){
         try {
             lectureService.removeReservation(login,lectureId);
             return ResponseEntity.ok().build();
-        }catch (RuntimeException ex){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }catch (UserNotFoundExceptionLogin ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+        catch (LectureNotFoundExceptionId ex){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
 
     }

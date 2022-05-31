@@ -1,6 +1,8 @@
 package com.example.webservice.Services;
 
 import com.example.webservice.Entities.User;
+import com.example.webservice.Entities.Projections.UserProjection;
+import com.example.webservice.Exceptions.UserExceptions.UserNotFoundExceptionId;
 import com.example.webservice.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,13 +37,13 @@ public class UserService {
        return userRepository.findById(userId);
     }
 
-    public List<Object[]> getUsers(){
+    public List<UserProjection> getUsers(){
        return userRepository.findAllWithIdAndEmail();
     }
 
     @Transactional
     public User editEmail(Long userId, User editedUser){
-       User user=getUser(userId).orElseThrow(RuntimeException::new);
+       User user=getUser(userId).orElseThrow(()->new UserNotFoundExceptionId(userId));
        user.setEmail(editedUser.getEmail());
        return user;
 
