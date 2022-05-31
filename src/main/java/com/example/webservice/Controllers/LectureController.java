@@ -1,7 +1,10 @@
 package com.example.webservice.Controllers;
 
+import com.example.webservice.Entities.InterestViews.CategoryInterestView;
 import com.example.webservice.Entities.Lecture;
+import com.example.webservice.Entities.InterestViews.LectureInterestView;
 import com.example.webservice.Entities.User;
+import com.example.webservice.Services.InterestService;
 import com.example.webservice.Services.LectureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +26,12 @@ public class LectureController {
 
 
     private final LectureService lectureService;
+    private final InterestService interestService;
 
     @Autowired
-    public LectureController(LectureService lectureService) {
+    public LectureController(LectureService lectureService, InterestService interestService) {
         this.lectureService = lectureService;
+        this.interestService = interestService;
     }
 
     // GET http://localhost:8080/api/schedule
@@ -35,11 +40,17 @@ public class LectureController {
         return new ResponseEntity<>(lectureService.getLectures(),HttpStatus.OK);
     }
 
-//    // GET http://localhost:8080/api/lectures/organisation
-//    @GetMapping(value = "/lectures/organisation")
-//    public ResponseEntity<List<Lecture>> getLectureInterest(){
-//        return new ResponseEntity<>(lectureService.getLectureInterest(),HttpStatus.OK);
-//    }
+    // GET http://localhost:8080/api/lectures/interest/lecture
+    @GetMapping(value = "/lectures/interest/lecture")
+    public ResponseEntity<List<LectureInterestView>> getLectureInterest(){
+        return new ResponseEntity<>(interestService.getLectureInterest(),HttpStatus.OK);
+    }
+
+    // GET http://localhost:8080/api/lectures/interest/category
+    @GetMapping(value = "/lectures/interest/category")
+    public ResponseEntity <List<CategoryInterestView>> getLectureCategoryInterest(){
+        return new ResponseEntity<>(interestService.getLectureCategoryInterest(),HttpStatus.OK);
+    }
 
     //TU DODAC CustomException
     // GET http://localhost:8080/api/lectures?login=

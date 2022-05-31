@@ -3,12 +3,9 @@ package com.example.webservice.Services;
 import com.example.webservice.Entities.Lecture;
 import com.example.webservice.Entities.User;
 import com.example.webservice.Repositories.LectureRepository;
-import com.example.webservice.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,17 +13,23 @@ import java.util.Optional;
 public class LectureService {
     private final LectureRepository lectureRepository;
     private final UserService userService;
+//    private final InterestService interestService;
 
     @Autowired
-    public LectureService(LectureRepository lectureRepository, UserService userService) {
+    public LectureService(LectureRepository lectureRepository, UserService userService, InterestService interestService) {
         this.lectureRepository = lectureRepository;
         this.userService= userService;
+//        this.interestService = interestService;
     }
 
     //get conference schedule   ->  // GET http://localhost:8080/api/schedule
     public List<Lecture> getLectures(){
         return lectureRepository.findAll();
     }
+
+
+
+
 
     //get lecture by id if exists   ->  used by other methods
     public Lecture getLecture(Long lectureId) throws RuntimeException{
